@@ -4,10 +4,23 @@ const cors = require('cors');
 const usersRouter = require('../users/usersRouter.js');
 const authRouter = require('../auth/authRouter.js');
 const errorHandler = require('./errorHandler.js');
+const session = require('express-session');
 
 const server = express();
 
+const sessionConfig = {
+    name: 'jvcookie',
+    secret: 'its a secret',
+    cookie: {
+        maxAge: 1000 * 60 * 60,
+        secure: false,
+        httpOnly: true
+    },
+    resave: false,
+    saveUninitialized: false
+}
 
+server.use(session(sessionConfig));
 server.use(express.json());
 server.use(helmet());
 server.use(cors());

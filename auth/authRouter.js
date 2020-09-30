@@ -20,9 +20,10 @@ router.post('/login', async (req, res, next) => {
     let { username, password } = req.body;
 
     try {
-        const [user] = await users.findBy({ username });
+        const user = await users.findBy({ username }).first();
         if (user && bcrypt.compareSync(password, user.password)) {
-            res.status(200).json({ message: `Welcome ${user.username}!` });
+            req.session.user = user;
+            res.status(200).json({ message: `Welcome ${user.username}, have a cookie!` });
         } else {
             next({ apiCode: 401, apiMessage: 'invalid credentials' })
         }
