@@ -14,8 +14,21 @@ router.post('/register', async (req, res, next) => {
     } catch (err) {
         next({ apiCode: 500, apiMessage: 'error registering', ...err });
     }
-
-
 })
+
+router.post('/login', async (req, res, next) => {
+    let { username, password } = req.body;
+
+    try {
+        const [user] = await users.findBy({ username });
+        if (user && bcrypt.compareSync(password, user.password)) {
+            res.status(200).json({ message: `Welcome ${user.username}!` });
+        } else {
+            next({ apiCode: 401, apiMessage: 'invalid credentials' })
+        }
+    } catch (err) {
+        next({ apiCode: 500, apiMessage: 'error logging in', ...err });
+    }
+});
 
 module.exports = router;
