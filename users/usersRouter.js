@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const { response } = require('../api/server');
 const db = require('./usersModel');
+const restricted = require('../auth/restricted-middleware.js');
 
-router.get('/', (req, res, next) => {
+router.get('/', restricted, (req, res, next) => {
     console.log(req.session);
     db.getUsers()
         .then(response => {
