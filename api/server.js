@@ -5,6 +5,7 @@ const usersRouter = require('../users/usersRouter.js');
 const authRouter = require('../auth/authRouter.js');
 const errorHandler = require('./errorHandler.js');
 const session = require('express-session');
+const knexSessionStore = require('connect-session-knex')(session);
 
 const server = express();
 
@@ -17,7 +18,16 @@ const sessionConfig = {
         httpOnly: true
     },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+
+
+    store: new knexSessionStore({
+        knex: require('../database/db-config'),
+        tablename: 'sessions',
+        sidfieldname: 'sid',
+        createtable: true,
+        clearInterval: 1000 * 60 * 60
+    })
 }
 
 server.use(session(sessionConfig));
