@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const users = require('../users/usersModel.js');
 const bcrypt = require('bcryptjs');
-// const dbConfig = require('../database/db-config.js');
+const jwt = require('jsonwebtoken');
+const secrets = require('../config/secrets.js');
 
 router.post('/register', async (req, res, next) => {
     let user = req.body;
@@ -22,8 +23,9 @@ router.post('/login', async (req, res, next) => {
     try {
         const user = await users.findBy({ username }).first();
         if (user && bcrypt.compareSync(password, user.password)) {
+            const token = generateToken(user);
             req.session.user = user;
-            res.status(200).json({ message: `Welcome ${user.username}, have a cookie!` });
+            res.status(200).json(token);
         } else {
             next({ apiCode: 401, apiMessage: 'invalid credentials' })
         }
@@ -31,5 +33,16 @@ router.post('/login', async (req, res, next) => {
         next({ apiCode: 500, apiMessage: 'error logging in', ...err });
     }
 });
+
+function generateToken(user) {
+    const payload = {
+        subject: user.id,
+        username: user.username,
+    };
+    const options = {
+        expiresIn: '8h'
+    }
+    return jwt.sign(payload, secrets.jwtSecret, options);
+}
 
 module.exports = router;

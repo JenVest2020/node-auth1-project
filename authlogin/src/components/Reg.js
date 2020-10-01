@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { axiosWithAuth } from '../utils/axiosWithAuth';
 
 const Registration = () => {
     const [credentials, setCredentials] = useState({
@@ -19,10 +19,11 @@ const Registration = () => {
 
     const reg = e => {
         e.preventDefault();
-        axios.post('http://localhost:4050/api/auth/register', credentials)
+        axiosWithAuth().post('/api/auth/register', credentials)
             .then(res => {
-                console.log('reg successful', res);
+                localStorage.setItem('token', res.data.payload);
                 history.push('/login');
+
 
             })
             .catch(err => {
