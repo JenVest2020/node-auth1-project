@@ -25,9 +25,9 @@ router.post('/login', async (req, res, next) => {
         if (user && bcrypt.compareSync(password, user.password)) {
             const token = generateToken(user);
             req.session.user = user;
-            res.status(200).json(token);
+            res.status(200).json({ message: `welcome ${username}, have a cookie!`, token: token });
         } else {
-            next({ apiCode: 401, apiMessage: 'invalid credentials' })
+            next({ apiCode: 401, apiMessage: 'You shall not pass!' })
         }
     } catch (err) {
         next({ apiCode: 500, apiMessage: 'error logging in', ...err });

@@ -33,7 +33,11 @@ const sessionConfig = {
 server.use(session(sessionConfig));
 server.use(express.json());
 server.use(helmet());
-server.use(cors());
+const config = {
+    origin: 'http//localhost3000',
+    credentials: true,
+};
+server.use(cors(config));
 server.use('/api/users', usersRouter);
 server.use('/api/auth', authRouter);
 
