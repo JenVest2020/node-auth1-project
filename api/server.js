@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const usersRouter = require('../users/usersRouter.js');
 const authRouter = require('../auth/authRouter.js');
@@ -33,11 +34,8 @@ const sessionConfig = {
 server.use(session(sessionConfig));
 server.use(express.json());
 server.use(helmet());
-const config = {
-    origin: 'http//localhost3000',
-    credentials: true,
-};
-server.use(cors(config));
+server.use(bodyParser.json());
+server.use(cors());
 server.use('/api/users', usersRouter);
 server.use('/api/auth', authRouter);
 

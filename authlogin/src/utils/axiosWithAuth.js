@@ -7,6 +7,6 @@ export const axiosWithAuth = () => {
         headers: {
             Authorization: token
         },
-        baseURL: 'http://localhost:4050'
+        baseURL: 'http://localhost:4052'
     });
 }
